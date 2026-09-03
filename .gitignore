@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+
+# Weights (large binaries are distributed separately)
+weights/
+
+# Datasets (distributed separately, see dataset/README.md)
+dataset/Human/
+dataset/Mouse/
+
+# Temporary caches
+.apa_polya_cache/
+
+# Outputs
+tests/output*.txt
+tests/*.fa
+
+# Environment
+.env
+.venv
+
+# macOS junk
+.DS_Store
+._*

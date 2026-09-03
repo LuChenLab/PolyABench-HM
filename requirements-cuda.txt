@@ -1,0 +1,21 @@
+# CUDA 11.8-enabled torch wheels for apa-polya-predictor.
+# Install with: pip install -r requirements-cuda.txt
+#
+# For other CUDA versions, adjust the --extra-index-url at
+# https://download.pytorch.org/whl/cu118
+
+--extra-index-url https://download.pytorch.org/whl/cu118
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.5.1
+scipy==1.13.1
+torch==2.0.1+cu118
+joblib==1.4.2
+biopython==1.84
+transformers==4.41.0
+tokenizers==0.19.1
+huggingface-hub==0.24.5
+accelerate==0.33.0
+tqdm==4.66.5
+attrdict==2.0.1
+packaging==24.1

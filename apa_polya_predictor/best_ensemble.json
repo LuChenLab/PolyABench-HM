@@ -1,0 +1,21 @@
+{
+  "Human": [
+    "deeppasta",
+    "DNABERT2",
+    "pasnet",
+    "GENA-LM-base",
+    "polyaid",
+    "UTRLM",
+    "DNABERT1"
+  ],
+  "Mouse": [
+    "deeppasta",
+    "pasnet",
+    "DNABERT2",
+    "polyaid",
+    "DNABERT1",
+    "UTRLM",
+    "deeppolya",
+    "deepgsr"
+  ]
+}

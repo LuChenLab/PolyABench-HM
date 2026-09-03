@@ -1,0 +1,9 @@
+exclude tests/*
+recursive-exclude tests *
+exclude scripts/*
+recursive-exclude scripts *
+exclude weights/*
+recursive-exclude weights *
+include examples/*
+recursive-include examples *
+include apa_polya_predictor/models/deeppasta/RNAshapes
