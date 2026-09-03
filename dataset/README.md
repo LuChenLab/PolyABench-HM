@@ -3,6 +3,10 @@
 Training/validation/test benchmark datasets and the eight independent external
 evaluation datasets used in the APA benchmark study, organized by species.
 
+The datasets (~9 GB) are **not** included in this repository. Download them from:
+
+**[Download datasets](https://example.com/PolyABench-HM-datasets)** (placeholder link, to be updated)
+
 All files are plain FASTA. The last colon-separated field of each header is the
 class label (`1` = positive PAS sequence, `0` = negative). Each sequence is a
 240-nt window centred on the candidate PAS.

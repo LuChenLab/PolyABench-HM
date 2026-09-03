@@ -61,8 +61,6 @@ Core runtime dependencies are listed in `pyproject.toml` and pinned in `requirem
 
 If you only install via `pip install -e .`, pip will pull compatible versions of these packages automatically. The `requirements.txt` files provide exact versions that have been tested.
 
-## Weights
-
 ## System requirements
 
 - **OS**: Linux x86_64 (the bundled `RNAshapes` binary is compiled for Linux).
@@ -78,7 +76,11 @@ If you only install via `pip install -e .`, pip will pull compatible versions of
 
 ## Weights
 
-Pre-trained weights are expected under the `weights/` directory:
+Pre-trained weights (~5 GB) are **not** included in this repository. Download them from:
+
+**[Download pre-trained weights](https://example.com/PolyABench-HM-weights)** (placeholder link, to be updated)
+
+After downloading, the weights are expected under the `weights/` directory:
 
 ```
 weights/
