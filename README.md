@@ -78,7 +78,7 @@ If you only install via `pip install -e .`, pip will pull compatible versions of
 
 Pre-trained weights (~5 GB) are **not** included in this repository. Download them from:
 
-**[Download pre-trained weights](https://example.com/PolyABench-HM-weights)** (placeholder link, to be updated)
+**[Download pre-trained weights](https://doi.org/10.5281/zenodo.22282470)** (record contains both `PolyABench-HM-weights.tar.gz` and `PolyABench-HM-dataset.tar.gz`; link activates when the record is published)
 
 After downloading, the weights are expected under the `weights/` directory:
 

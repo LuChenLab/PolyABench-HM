@@ -5,7 +5,7 @@ evaluation datasets used in the APA benchmark study, organized by species.
 
 The datasets (~9 GB) are **not** included in this repository. Download them from:
 
-**[Download datasets](https://example.com/PolyABench-HM-datasets)** (placeholder link, to be updated)
+**[Download datasets](https://doi.org/10.5281/zenodo.22282470)** (download `PolyABench-HM-dataset.tar.gz`; link activates when the record is published)
 
 All files are plain FASTA. The last colon-separated field of each header is the
 class label (`1` = positive PAS sequence, `0` = negative). Each sequence is a
