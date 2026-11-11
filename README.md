@@ -57,7 +57,7 @@ Core dependencies (`numpy`, `pandas`, `scikit-learn`, `scipy`, `torch >= 2.0`, `
 
 Pre-trained weights (~5 GB) are **not** included in this repository:
 
-**[⬇ Download pre-trained weights (Zenodo)](https://doi.org/10.5281/zenodo.22282470)** — the record contains both `PolyABench-HM-weights.tar.gz` and `PolyABench-HM-dataset.tar.gz`.
+**[⬇ Download pre-trained weights (Zenodo)](https://doi.org/10.5281/zenodo.22282470)** — `PolyABench-HM-weights.tar.gz`
 
 Place them under `weights/`:
 
@@ -70,6 +70,26 @@ weights/
 ├── Mouse/                       ... (same structure)
 └── pretrained/llm/              # dnabert1, dnabert2, rnabert, utrlm, gena_lm_base
 ```
+
+## Datasets
+
+The benchmark training/validation/test sets and 8 independent external evaluation datasets (Human & Mouse) are **not** included in this repository:
+
+**[⬇ Download benchmark datasets (Zenodo)](https://doi.org/10.5281/zenodo.22282470)** — `PolyABench-HM-dataset.tar.gz`
+
+Extract under `dataset/`:
+
+```
+dataset/
+├── Human/
+│   ├── Benchmark/    # train_1.fasta, val.fasta, test.fasta (8:1:1 group-level split)
+│   └── PolyAID, PolyAseq, DeepGSR, Dragon_PolyA, Omni_PolyA/   # external sets
+└── Mouse/
+    ├── Benchmark/    # train_1.fasta, val.fasta, test.fasta
+    └── DeepGSR, SPRET_EiJ, C57BL_6J/                           # external sets
+```
+
+All files are labelled FASTA (240-nt window centred on the candidate PAS; last header field is the class label). See [`dataset/README.md`](dataset/README.md) for full details.
 
 ## Quick start
 
