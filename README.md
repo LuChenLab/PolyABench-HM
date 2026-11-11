@@ -1,47 +1,47 @@
-# apa-polya-predictor
+# PolyABench-HM
 
-A standalone, production-ready APA/polyA site prediction tool for **Human** and **Mouse**, based on the `apa-polyA-benchmark` deep-learning models.
+[![Python](https://img.shields.io/badge/Python-%E2%89%A53.8-blue)](https://www.python.org/)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20x86__64-lightgrey)]()
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Weights](https://img.shields.io/badge/Weights-Zenodo-orange)](https://doi.org/10.5281/zenodo.22282470)
+
+A standalone, production-ready APA/polyA site prediction tool for **Human** and **Mouse**, built on the `apa-polyA-benchmark` deep-learning models. Provides the `apa-polya-predict` command-line tool and a Python API.
 
 ## Features
 
-- **Input**: any FASTA file of DNA/RNA sequences.
-- **Preprocessing**: sequences longer than 240 nt are cropped to a 240-nt window centered on the input; shorter sequences are padded with `N`.
+- **Input**: any FASTA file of DNA/RNA sequences. Sequences longer than 240 nt are cropped to a 240-nt centered window; shorter ones are padded with `N`.
 - **Models**:
-  - Traditional one-hot/k-mer models: `deeppolya`, `deerect`, `polyaid`, `deepgsr`, `pasnet`.
-  - RNA-structure model: `deeppasta` (requires the `RNAshapes` binary; automatically called when selected).
-  - Large language models: `DNABERT1`, `DNABERT2`, `RNABERT`, `UTRLM`, `GENA-LM-base`.
-- **Ensemble**: `ensemble` keyword uses the greedy-forward-selected best model subset + gradient boosting.
-- **Output**: tab-delimited text file with per-model probabilities, per-model binary labels, and ensemble prediction (when `-m ensemble`).
+  - Traditional one-hot/k-mer: `deeppolya`, `deerect`, `polyaid`, `deepgsr`, `pasnet`
+  - RNA-structure: `deeppasta` (requires the bundled `RNAshapes` binary, Linux only)
+  - Large language models: `DNABERT1`, `DNABERT2`, `RNABERT`, `UTRLM`, `GENA-LM-base`
+- **Ensemble**: `-m ensemble` uses a greedy-forward-selected best model subset with gradient boosting.
+- **Output**: tab-delimited file with per-model probabilities, binary labels, and ensemble prediction.
 
 ## Installation
 
-The package requires **Python >= 3.8** (tested on Python 3.9).
+Requires **Python ≥ 3.8** (tested on 3.9) and **Linux x86_64** (the bundled `RNAshapes` binary is Linux-only). A CUDA-capable GPU is optional but significantly speeds up LLM inference.
 
-### Option 1: pip install (recommended for users)
+### Option 1: pip (recommended for users)
 
 ```bash
-# Clone or copy the package
 cd PolyABench-HM
 
-# Create a virtual environment (optional but recommended)
+# Virtual environment (optional but recommended)
 python -m venv venv
-source venv/bin/activate  # on Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install dependencies
 pip install -r requirements.txt
-
-# Install the package itself
 pip install -e .
 ```
 
-For GPU support, use the CUDA requirements file instead (the two files differ only in the torch build: the default PyPI build bundles the CUDA 11.7 runtime, while `requirements-cuda.txt` pins the CUDA 11.8 build matching `environment.yml`; see `ENVIRONMENT.md` for the full compute environment):
+For GPU support, use `requirements-cuda.txt` instead (CUDA 11.8 build, matching `environment.yml`):
 
 ```bash
 pip install -r requirements-cuda.txt
 pip install -e .
 ```
 
-### Option 2: conda install (recommended for GPU)
+### Option 2: conda (recommended for GPU)
 
 ```bash
 conda env create -f environment.yml
@@ -49,75 +49,37 @@ conda activate apa-polya
 pip install -e .
 ```
 
-### Dependencies
+Core dependencies (`numpy`, `pandas`, `scikit-learn`, `scipy`, `torch >= 2.0`, `biopython`, `transformers`, etc.) are declared in `pyproject.toml`; the `requirements*.txt` files pin tested versions. The full hardware/software configuration used in the accompanying study is documented in [`ENVIRONMENT.md`](ENVIRONMENT.md).
 
-Core runtime dependencies are listed in `pyproject.toml` and pinned in `requirements.txt`:
-
-- `numpy`, `pandas`, `scikit-learn`, `scipy`
-- `torch` (>= 2.0)
-- `joblib`, `biopython`
-- `transformers`, `tokenizers`, `huggingface-hub`, `accelerate`
-- `tqdm`, `attrdict`, `packaging`
-
-If you only install via `pip install -e .`, pip will pull compatible versions of these packages automatically. The `requirements.txt` files provide exact versions that have been tested.
-
-## System requirements
-
-- **OS**: Linux x86_64 (the bundled `RNAshapes` binary is compiled for Linux).
-- **Python**: >= 3.8 (tested on Python 3.9).
-- **GPU**: Optional; CUDA-capable GPU speeds up LLM inference significantly.
-
-The exact hardware and software configuration used for all analyses in the accompanying study is documented in [`ENVIRONMENT.md`](ENVIRONMENT.md).
-
-> **Note on DNABERT2**: DNABERT2's optional flash-attention kernel requires a
-> specific Triton nightly and fails with several released Triton versions (or on
-> CPU). This package therefore always runs DNABERT2 with standard (eager)
-> attention, which is numerically equivalent and works on both CPU and GPU; the
-> only cost is slightly slower DNABERT2 inference. No action is needed from the
-> user.
+> **Note on DNABERT2**: the optional flash-attention kernel is disabled (it fails with several Triton versions and on CPU). DNABERT2 runs with standard eager attention — numerically equivalent, works on CPU and GPU, only slightly slower. No action needed.
 
 ## Weights
 
-Pre-trained weights (~5 GB) are **not** included in this repository. Download them from:
+Pre-trained weights (~5 GB) are **not** included in this repository:
 
-**[Download pre-trained weights](https://doi.org/10.5281/zenodo.22282470)** (record contains both `PolyABench-HM-weights.tar.gz` and `PolyABench-HM-dataset.tar.gz`; link activates when the record is published)
+**[⬇ Download pre-trained weights (Zenodo)](https://doi.org/10.5281/zenodo.22282470)** — the record contains both `PolyABench-HM-weights.tar.gz` and `PolyABench-HM-dataset.tar.gz`.
 
-After downloading, the weights are expected under the `weights/` directory:
+Place them under `weights/`:
 
 ```
 weights/
 ├── Human/
-│   ├── deeppolya_best_model.pt
-│   ├── deerect_best_model.pt
-│   ├── polyaid_best_model.pt
-│   ├── deepgsr_best_model.pt
-│   ├── pasnet_best_model.pt
-│   ├── llm/
-│   │   ├── DNABERT1_best_model.pt
-│   │   ├── DNABERT2_best_model.pt
-│   │   ├── RNABERT_best_model.pt
-│   │   ├── UTRLM_best_model.pt
-│   │   └── GENA-LM-base_best_model.pt
-│   └── gb_ensemble_best.joblib       # greedy-forward-selected best ensemble
-├── Mouse/
-│   └── ... (same structure)
-└── pretrained/llm/
-    ├── dnabert1/
-    ├── dnabert2/
-    ├── rnabert/
-    ├── utrlm/
-    └── gena_lm_base/
+│   ├── deeppolya_best_model.pt  ... (5 traditional models)
+│   ├── llm/                     ... (5 LLM checkpoints)
+│   └── gb_ensemble_best.joblib  # greedy-forward-selected best ensemble
+├── Mouse/                       ... (same structure)
+└── pretrained/llm/              # dnabert1, dnabert2, rnabert, utrlm, gena_lm_base
 ```
 
 ## Quick start
 
-An example FASTA file is provided in `examples/example.fa` (6 Human sequences, 3 positive and 3 negative polyA sites).
+An example FASTA file is provided at `examples/example.fa` (6 Human sequences: 3 positive, 3 negative polyA sites).
 
 ```bash
-# Best ensemble (greedy-forward-selected subset + gradient boosting)
+# Best ensemble (recommended)
 apa-polya-predict -i examples/example.fa -s Human -m ensemble -o predictions.txt
 
-# Default: 5 traditional models, per-model probabilities and labels
+# Default: 5 traditional models
 apa-polya-predict -i examples/example.fa -s Human -o predictions.txt
 
 # Mouse
@@ -126,14 +88,13 @@ apa-polya-predict -i examples/example.fa -s Mouse -o predictions.txt
 # Single model
 apa-polya-predict -i examples/example.fa -s Human -m deeppolya -o predictions.txt
 
-# All 11 models, per-model probabilities
+# All 11 models
 apa-polya-predict -i examples/example.fa -s Human -m all+llm -o predictions.txt
 
-# Include deeppasta (RNAshapes must be installed and in PATH, or use --rnashapes_bin)
-apa-polya-predict -i examples/example.fa -s Human -m all+llm,deeppasta -o predictions.txt
+# Include deeppasta (RNAshapes in PATH, or pass --rnashapes_bin)
 apa-polya-predict -i examples/example.fa -s Human -m all+llm,deeppasta --rnashapes_bin /path/to/RNAshapes -o predictions.txt
 
-# Force CPU / GPU
+# Force CPU
 apa-polya-predict -i examples/example.fa -s Human -m ensemble -o predictions.txt --device cpu
 ```
 
@@ -143,32 +104,32 @@ apa-polya-predict -i examples/example.fa -s Human -m ensemble -o predictions.txt
 |--------|-------------|
 | `-i, --input` | Input FASTA file (required) |
 | `-s, --species` | `Human` or `Mouse` (required) |
-| `-m, --models` | `ensemble` (greedy-forward-selected best subset + GB), `all`, `all+llm`, or comma-separated list |
-| `-t, --threshold` | Decision threshold (default: 0.5; for `-m ensemble`, defaults to the validation-tuned threshold) |
+| `-m, --models` | `all` (default, 5 traditional models), `all+llm` (all 11), `ensemble`, or comma-separated list |
+| `-t, --threshold` | Decision threshold (default: 0.5; overrides the tuned threshold for `-m ensemble`) |
 | `-o, --output` | Output file path (required) |
 | `--weights_dir` | Custom weights directory |
 | `--batch_size` | Batch size for traditional models (default: 256) |
 | `--llm_batch_size` | Batch size for LLMs (default: 32) |
-| `--device` | `cpu` or `cuda` (auto-detected) |
+| `--device` | `cpu` or `cuda` (auto-detected if omitted) |
+| `--rnashapes_bin` | Path to the RNAshapes binary (searched in PATH if omitted) |
 | `--output_format` | `tsv` (default) or `csv` |
 
-## Per-model decision thresholds
+## Decision thresholds
 
-The CLI uses a uniform default threshold of 0.5 for all models. As an optional reference, `optimal_thresholds.txt` (repository root) lists, for each species, the validation-MCC-optimal decision threshold of each of the 11 base models and of the ensemble, together with the validation MCC at that threshold and at 0.5. These values can be applied by binarising the `*_prob` output columns at the listed cutoffs; for `-m ensemble`, the tuned threshold stored in `gb_ensemble_best.joblib` is used automatically unless `-t` is given.
+All models use a default threshold of 0.5. As an optional reference, [`optimal_thresholds.txt`](optimal_thresholds.txt) lists the validation-MCC-optimal threshold for each model and species; apply them by binarising the `*_prob` columns at the listed cutoffs. For `-m ensemble`, the tuned threshold stored in `gb_ensemble_best.joblib` is used automatically unless `-t` is given.
 
 ## Output format
 
-A tab-delimited file with one row per input sequence:
+One row per input sequence:
 
 ```
 header  deeppolya_prob  deeppolya_pred  deerect_prob  deerect_pred  ...  ensemble_prob  ensemble_pred
 seq1    0.0034          0               0.0003        0             ...  0.2498         0
 ```
 
-- `*_prob`: probability of being a positive poly(A) site from each model.
-- `*_pred`: binary prediction from each model (`1` if `*_prob >= threshold`, else `0`).
-- `ensemble_prob`: aggregated probability from the greedy-forward-selected best ensemble (only when `-m ensemble`).
-- `ensemble_pred`: binary prediction from the ensemble (`1` if `ensemble_prob >= threshold`, else `0`).
+- `*_prob`: probability of being a positive poly(A) site.
+- `*_pred`: binary label (`1` if `*_prob >= threshold`).
+- `ensemble_prob` / `ensemble_pred`: ensemble outputs (only with `-m ensemble`).
 
 ## Programmatic use
 
@@ -180,13 +141,11 @@ from apa_polya_predictor.cli import apply_best_ensemble
 predictor = Predictor(
     weights_dir="weights",
     species="Human",
-    models=["ensemble"],  # best greedy-forward-selected subset
+    models=["ensemble"],
     device="cuda",
 )
 
 df = predictor.predict_fasta("input.fa")
-
-# Apply the shipped best-ensemble meta-learner
 meta_bundle = joblib.load("weights/Human/gb_ensemble_best.joblib")
 df, threshold = apply_best_ensemble(df, meta_bundle)
 print(df[["header", "ensemble_prob", "ensemble_pred"]])
@@ -194,16 +153,14 @@ print(df[["header", "ensemble_prob", "ensemble_pred"]])
 
 ## Best ensemble selection
 
-The default `-m ensemble` uses the greedy-forward-selected best model subset for each species:
+The `-m ensemble` subsets, chosen by greedy-forward selection (anchored at DeepPASTA, the best single model by test AUPRC) with gradient boosting:
 
 - **Human** (7 models): `deeppasta`, `DNABERT2`, `pasnet`, `GENA-LM-base`, `polyaid`, `UTRLM`, `DNABERT1`
 - **Mouse** (8 models): `deeppasta`, `pasnet`, `DNABERT2`, `polyaid`, `DNABERT1`, `UTRLM`, `deeppolya`, `deepgsr`
 
-These subsets were chosen by greedy-forward selection with gradient boosting: selection was anchored at DeepPASTA (the best single model by test AUPRC), and members and subset size were selected by validation AUPRC. The corresponding gradient-boosting meta-learners are saved as `weights/{Human,Mouse}/gb_ensemble_best.joblib`, with validation-MCC-optimal decision thresholds stored inside each bundle (see `optimal_thresholds.txt`).
+Meta-learners are stored as `weights/{Human,Mouse}/gb_ensemble_best.joblib`, with tuned thresholds inside each bundle.
 
 ## Updating the best ensemble (maintainers only)
-
-If you update the base models or re-run the forward-selection analysis, regenerate the best-ensemble meta-learner:
 
 ```bash
 python scripts/export_best_ensemble.py \
@@ -214,4 +171,4 @@ python scripts/export_best_ensemble.py \
 
 ## License
 
-MIT
+[MIT](LICENSE)
