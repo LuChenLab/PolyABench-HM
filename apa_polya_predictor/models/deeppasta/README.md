@@ -1,3 +1,5 @@
-# deeppasta
+# DeepPASTA
 
-该目录存放 deeppasta 的模型结构和与该模型直接相关的代码。
+Model architecture and model-specific code for DeepPASTA, including the
+bundled `RNAshapes` binary used to compute RNA secondary-structure features
+and the structure-cache utilities.

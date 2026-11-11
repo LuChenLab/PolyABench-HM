@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apa-polya-predictor"
-version = "0.1.0"
+version = "1.0.0"
 description = "Standalone APA/polyA site prediction tool for Human and Mouse."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -14,7 +14,7 @@ authors = [
 ]
 keywords = ["polyA", "APA", "deep learning", "bioinformatics"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Programming Language :: Python :: 3",
@@ -40,8 +40,8 @@ dependencies = [
 apa-polya-predict = "apa_polya_predictor.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/apa-polya-predictor"
-Repository = "https://github.com/yourusername/apa-polya-predictor"
+Homepage = "https://github.com/yang-qingxin/PolyABench-HM"
+Repository = "https://github.com/yang-qingxin/PolyABench-HM"
 
 [tool.setuptools.packages.find]
 where = ["."]

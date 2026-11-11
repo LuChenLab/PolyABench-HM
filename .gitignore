@@ -26,3 +26,6 @@ tests/*.fa
 # macOS junk
 .DS_Store
 ._*
+
+# Release archives (kept locally, distributed via Zenodo)
+PolyABench-HM-*.tar.gz

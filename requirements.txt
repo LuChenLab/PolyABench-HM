@@ -1,8 +1,12 @@
-# Core dependencies for apa-polya-predictor (CPU-compatible torch).
+# Core dependencies for apa-polya-predictor (default PyPI torch build).
 # Install with: pip install -r requirements.txt
 #
-# NOTE: If you need GPU support, install the CUDA-enabled torch wheels first,
-# or use requirements-cuda.txt / environment.yml instead.
+# This installs torch==2.0.1 from PyPI. On Linux this wheel already bundles
+# the CUDA 11.7 runtime, so it works on both CPU and GPU machines; on
+# macOS/Windows it falls back to CPU.
+# If your NVIDIA driver stack targets CUDA 11.8, or you want the exact
+# CUDA build used in our benchmark environment, install with
+# requirements-cuda.txt (torch==2.0.1+cu118) or use environment.yml instead.
 
 numpy==1.26.4
 pandas==2.2.2

@@ -1,0 +1,55 @@
+# PolyABench-HM -- MCC-optimal decision thresholds (benchmark validation set)
+#
+# For each species (Human/Mouse), the predicted probabilities of each of the
+# 11 base models and of the greedy-forward-selected gradient-boosting ensemble
+# were scanned on the benchmark validation set over cutoffs 0.01-0.99
+# (step 0.01). The cutoff maximising the Matthews correlation coefficient
+# (MCC) is reported, together with the validation MCC at that cutoff and at
+# the uniform default of 0.5.
+#
+# These thresholds are OPTIONAL. The CLI uses a uniform default of 0.5
+# (`apa-polya-predict -t`); per-model values below can be applied by
+# binarising the *_prob output columns at the listed cutoff. For
+# `-m ensemble`, the shipped meta-learner bundle
+# (weights/<Species>/gb_ensemble_best.joblib) stores the same
+# validation-MCC-optimal threshold listed below (Human 0.46 / Mouse 0.43),
+# which is applied automatically unless `-t` is given.
+#
+# Note: for DNABERT1, DNABERT2 and GENA-LM (base) the optimum sits at or
+# near the lower grid edge because these models emit near-binary
+# probabilities; 0.5 remains a reasonable operating point for them.
+#
+# Columns:
+#   species            Human or Mouse
+#   model              model name (Ensemble = gradient-boosting meta-learner
+#                      on the greedy-forward-selected base-model subset, see
+#                      apa_polya_predictor/best_ensemble.json)
+#   optimal_threshold  validation-MCC-optimal cutoff
+#   val_mcc_optimal    validation MCC at the optimal cutoff
+#   val_mcc_at_0.5     validation MCC at the uniform 0.5 cutoff
+
+species model           optimal_threshold   val_mcc_optimal   val_mcc_at_0.5
+Mouse   Ensemble        0.43                0.8062            0.8029        
+Mouse   DeepPASTA       0.50                0.7906            0.7906        
+Mouse   PolyAID         0.59                0.7894            0.7876        
+Mouse   PASNet          0.39                0.7885            0.7836        
+Mouse   DeepGSR         0.50                0.7563            0.7563        
+Mouse   DeeReCT-PolyA   0.50                0.7570            0.7570        
+Mouse   DeepPolyA       0.39                0.7427            0.7388        
+Mouse   UTR-LM          0.43                0.7718            0.7693        
+Mouse   RNABERT         0.52                0.7608            0.7606        
+Mouse   GENA-LM (base)  0.03                0.7279            0.7159        
+Mouse   DNABERT1        0.02                0.7579            0.7312        
+Mouse   DNABERT2        0.01                0.7014            0.6474        
+Human   Ensemble        0.46                0.7560            0.7539        
+Human   DeepPASTA       0.49                0.7429            0.7426        
+Human   PolyAID         0.55                0.7435            0.7422        
+Human   PASNet          0.45                0.7386            0.7374        
+Human   DeepGSR         0.46                0.7105            0.7092        
+Human   DeeReCT-PolyA   0.44                0.7035            0.7020        
+Human   DeepPolyA       0.39                0.6969            0.6868        
+Human   UTR-LM          0.46                0.7302            0.7292        
+Human   RNABERT         0.38                0.7022            0.6947        
+Human   GENA-LM (base)  0.04                0.6878            0.6816        
+Human   DNABERT1        0.01                0.6933            0.6463        
+Human   DNABERT2        0.01                0.6499            0.6233        

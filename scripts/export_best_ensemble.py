@@ -28,7 +28,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 
-# Best subsets from greedy-forward selection with Gradient Boosting (07_01_18, v2):
+# Best subsets from greedy-forward selection with Gradient Boosting:
 # anchored at DeepPASTA (best single model by test AUPRC), members and subset size
 # selected by validation AUPRC. Listed in order of selection; the order defines the
 # feature order of the exported GB meta-learner and must match best_ensemble.json.
@@ -184,9 +184,9 @@ def train_and_save(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export best ablated ensemble GB model")
-    parser.add_argument("--benchmark_root", default="/mnt/raid61/Personal_data/yangqingxin/software/apa-polyA-benchmark", help="Path to apa-polyA-benchmark repository")
+    parser.add_argument("--benchmark_root", required=True, help="Path to the apa-polyA-benchmark repository containing outputs/eval_for_stacking/<species>/train_1/val/ prediction CSVs")
     parser.add_argument("--species", default=None, choices=["Human", "Mouse"], help="Species to export. If omitted, both Human and Mouse are exported.")
-    parser.add_argument("--output_dir", default="/mnt/raid61/Personal_data/yangqingxin/software/apa-polya-predictor/weights", help="Directory to save the meta-learner")
+    parser.add_argument("--output_dir", default="weights", help="Directory to save the meta-learner (default: weights)")
     parser.add_argument("--n_estimators", type=int, default=150)
     parser.add_argument("--learning_rate", type=float, default=0.03)
     parser.add_argument("--max_depth", type=int, default=2)

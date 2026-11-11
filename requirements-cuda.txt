@@ -1,6 +1,11 @@
 # CUDA 11.8-enabled torch wheels for apa-polya-predictor.
 # Install with: pip install -r requirements-cuda.txt
 #
+# Identical to requirements.txt except for the torch build: this file pins
+# torch==2.0.1+cu118 from the PyTorch CUDA 11.8 wheel index (matching the
+# CUDA 11.8 toolchain of environment.yml, i.e. the original training
+# environment), instead of the default PyPI build (cu117). See
+# ENVIRONMENT.md for the full compute environment.
 # For other CUDA versions, adjust the --extra-index-url at
 # https://download.pytorch.org/whl/cu118
 

@@ -21,7 +21,7 @@ The package requires **Python >= 3.8** (tested on Python 3.9).
 
 ```bash
 # Clone or copy the package
-cd apa-polya-predictor
+cd PolyABench-HM
 
 # Create a virtual environment (optional but recommended)
 python -m venv venv
@@ -34,7 +34,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-For GPU support, use the CUDA requirements file instead:
+For GPU support, use the CUDA requirements file instead (the two files differ only in the torch build: the default PyPI build bundles the CUDA 11.7 runtime, while `requirements-cuda.txt` pins the CUDA 11.8 build matching `environment.yml`; see `ENVIRONMENT.md` for the full compute environment):
 
 ```bash
 pip install -r requirements-cuda.txt
@@ -66,6 +66,8 @@ If you only install via `pip install -e .`, pip will pull compatible versions of
 - **OS**: Linux x86_64 (the bundled `RNAshapes` binary is compiled for Linux).
 - **Python**: >= 3.8 (tested on Python 3.9).
 - **GPU**: Optional; CUDA-capable GPU speeds up LLM inference significantly.
+
+The exact hardware and software configuration used for all analyses in the accompanying study is documented in [`ENVIRONMENT.md`](ENVIRONMENT.md).
 
 > **Note on DNABERT2**: DNABERT2's optional flash-attention kernel requires a
 > specific Triton nightly and fails with several released Triton versions (or on
@@ -106,8 +108,6 @@ weights/
     ├── utrlm/
     └── gena_lm_base/
 ```
-
-> **Note for distribution**: the full weight directory is ~5 GB. It is not intended to be committed to Git; provide it as a separate download or shared folder.
 
 ## Quick start
 
@@ -152,6 +152,10 @@ apa-polya-predict -i examples/example.fa -s Human -m ensemble -o predictions.txt
 | `--device` | `cpu` or `cuda` (auto-detected) |
 | `--output_format` | `tsv` (default) or `csv` |
 
+## Per-model decision thresholds
+
+The CLI uses a uniform default threshold of 0.5 for all models. As an optional reference, `optimal_thresholds.txt` (repository root) lists, for each species, the validation-MCC-optimal decision threshold of each of the 11 base models and of the ensemble, together with the validation MCC at that threshold and at 0.5. These values can be applied by binarising the `*_prob` output columns at the listed cutoffs; for `-m ensemble`, the tuned threshold stored in `gb_ensemble_best.joblib` is used automatically unless `-t` is given.
+
 ## Output format
 
 A tab-delimited file with one row per input sequence:
@@ -195,7 +199,7 @@ The default `-m ensemble` uses the greedy-forward-selected best model subset for
 - **Human** (7 models): `deeppasta`, `DNABERT2`, `pasnet`, `GENA-LM-base`, `polyaid`, `UTRLM`, `DNABERT1`
 - **Mouse** (8 models): `deeppasta`, `pasnet`, `DNABERT2`, `polyaid`, `DNABERT1`, `UTRLM`, `deeppolya`, `deepgsr`
 
-These subsets were chosen by greedy-forward selection with gradient boosting (`script/V07_DL_Star/07_01_18_run_forward_selection_v2.sh` in the APA_yangqingxin project): selection was anchored at DeepPASTA (the best single model by test AUPRC), and members and subset size were selected by validation AUPRC. The corresponding gradient-boosting meta-learners are saved as `weights/{Human,Mouse}/gb_ensemble_best.joblib`.
+These subsets were chosen by greedy-forward selection with gradient boosting: selection was anchored at DeepPASTA (the best single model by test AUPRC), and members and subset size were selected by validation AUPRC. The corresponding gradient-boosting meta-learners are saved as `weights/{Human,Mouse}/gb_ensemble_best.joblib`, with validation-MCC-optimal decision thresholds stored inside each bundle (see `optimal_thresholds.txt`).
 
 ## Updating the best ensemble (maintainers only)
 
@@ -203,6 +207,7 @@ If you update the base models or re-run the forward-selection analysis, regenera
 
 ```bash
 python scripts/export_best_ensemble.py \
+  --benchmark_root /path/to/apa-polyA-benchmark \
   --species Human \
   --output_dir weights
 ```
